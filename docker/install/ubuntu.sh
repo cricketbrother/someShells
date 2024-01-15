@@ -3,11 +3,12 @@
 set -e
 
 # 在Ubuntu上安装Docker Engine
+INFO="本脚本运行要求:\n1. 以root身份运行\n2. 操作系统为Ubuntu 20.04,22.04,23.04,23.10\n3. 架构为x64"
 
 # 检查脚本是否以root身份运行
 echo ">>> 检查脚本是否以root身份运行"
 if [ $(id -u) -ne 0 ]; then
-    echo "请以root身份运行此脚本"
+    echo $INFO
     exit 1
 fi
 
@@ -15,40 +16,24 @@ fi
 echo ">>> 检查操作系统版本和架构"
 
 if [ $(. /etc/os-release && echo "$NAME") != "Ubuntu" ]; then
-    echo "此脚本仅支持Ubuntu操作系统,退出"
-    goto exit
+    echo $INFO
+    exit 1
 fi
 
 if [ $(uname -m) != "x86_64" ]; then
-    echo "此脚本仅支持x86_64架构,退出"
-    goto exit
+    echo $INFO
+    exit 1
 fi
 
-if [ $(. /etc/os-release && echo "$VERSION_ID") == "20.04" ]; then
-    echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
-    goto install
+VERSION_ID=$(. /etc/os-release && echo "$VERSION_ID")
+if [ $VERSION_ID != "20.04" ] && [ $VERSION_ID != "22.04" ] && [ $VERSION_ID != "23.04" ] && [ $VERSION_ID != "23.10" ]; then
+    echo $INFO
+    exit 1
 fi
 
-if [ $(. /etc/os-release && echo "$VERSION_ID") == "22.04" ]; then
-    echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
-    goto install
-fi
-
-if [ $(. /etc/os-release && echo "$VERSION_ID") == "23.04" ]; then
-    echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
-    goto install
-fi
-
-if [ $(. /etc/os-release && echo "$VERSION_ID") == "23.10" ]; then
-    echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
-    goto install
-fi
-
-echo "$(. /etc/os-release && echo "$PRETTY_NAME")不满足操作系统要求,退出"
-goto exit
+echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
 
 # 安装Docker Engine
-:install
 echo ">>> 安装Docker Engine"
 
 echo ">>> 卸载旧版本"
@@ -70,9 +55,4 @@ echo \
 apt update -y
 apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# 退出
-:exit
-echo "本脚本运行要求:"
-echo "1. 以root身份运行"
-echo "2. 操作系统为Ubuntu 20.04,22.04,23.04,23.10"
-echo "3. 架构为x64"
+echo ">>> 安装完成"
