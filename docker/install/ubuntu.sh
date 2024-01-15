@@ -37,11 +37,11 @@ echo "$(. /etc/os-release && echo "$PRETTY_NAME") x64满足操作系统要求"
 echo ">>> 安装Docker Engine"
 
 echo ">>> 卸载旧版本"
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt remove -qq $pkg >/dev/null 2>&1; done
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do apt remove $pkg >/dev/null 2>&1; done
 
 echo ">>> 安装新版本"
-apt update -y -qq >/dev/null 2>&1
-apt install -y -qq ca-certificates curl gnupg >/dev/null 2>&1
+apt update -y >/dev/null 2>&1
+apt install -y ca-certificates curl gnupg >/dev/null 2>&1
 install -m 0755 -d /etc/apt/keyrings
 if [ -f /etc/apt/keyrings/docker.gpg ]; then
     rm -f /etc/apt/keyrings/docker.gpg
@@ -52,8 +52,8 @@ echo \
     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |
     tee /etc/apt/sources.list.d/docker.list >/dev/null
-apt update -y -qq >/dev/null 2>&1
-apt install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null 2>&1
+apt update -y >/dev/null 2>&1
+apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin >/dev/null 2>&1
 
 # 打印Docker版本
 echo ">>> 打印Docker版本"
