@@ -69,9 +69,13 @@ sudo ninja -C build install
 # 9. 刷新库缓存
 sudo ldconfig
 
-# 10. 完成提示
+# 10. 重启服务
+echo "🔄 重启 fprintd 服务以加载新驱动..."
+sudo systemctl restart fprintd
+
+# 11. 完成提示
 echo ""
-echo "✅ CS9711 驱动安装成功！"
+echo "✅ CS9711 指纹驱动安装成功！"
 echo ""
 echo "🔍 查看设备是否识别："
 echo "   lsusb | grep -i '9711\|chunsheng'"
